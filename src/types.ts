@@ -13,6 +13,7 @@ export interface Role {
   id: string;
   name: string;
   color: string;
+  description: string;
 }
 
 export interface Hero {
@@ -32,14 +33,43 @@ export interface AppData {
 }
 
 export const DEFAULT_ROLES: Role[] = [
-  { id: "role-1", name: "Role 1", color: "#e87979" },
-  { id: "role-2", name: "Role 2", color: "#e9a45b" },
-  { id: "role-3", name: "Role 3", color: "#e5cf65" },
-  { id: "role-4", name: "Role 4", color: "#75bd8a" },
-  { id: "role-5", name: "Role 5", color: "#70a9dc" },
-  { id: "role-6", name: "Role 6", color: "#ae88d8" },
+  {
+    id: "role-1",
+    name: "Role 1",
+    color: "#e87979",
+    description: "",
+  },
+  {
+    id: "role-2",
+    name: "Role 2",
+    color: "#e9a45b",
+    description: "",
+  },
+  {
+    id: "role-3",
+    name: "Role 3",
+    color: "#e5cf65",
+    description: "",
+  },
+  {
+    id: "role-4",
+    name: "Role 4",
+    color: "#75bd8a",
+    description: "",
+  },
+  {
+    id: "role-5",
+    name: "Role 5",
+    color: "#70a9dc",
+    description: "",
+  },
+  {
+    id: "role-6",
+    name: "Role 6",
+    color: "#ae88d8",
+    description: "",
+  },
 ];
-
 
 const HERO_FILES = [
   "Abrams_card.webp",
@@ -90,9 +120,15 @@ const HERO_FILES = [
 
 export const DEFAULT_DATA: AppData = {
   heroes: HERO_FILES.map((file, index) => ({
-    id: file.replace("_card.webp", "").replace("_card.png", "").toLowerCase(),
-    name: file.replace("_card.webp", "").replace("_card.png", "").replace("_card", ""),
-    image: `/heroes/${file}`,
+    id: file
+      .replace("_card.webp", "")
+      .replace("_card.png", "")
+      .toLowerCase(),
+    name: file
+      .replace("_card.webp", "")
+      .replace("_card.png", "")
+      .replace("_card", ""),
+    image: `${import.meta.env.BASE_URL}heroes/${file}`,
     status: "not-tested",
     roles: [],
     hasBuild: false,
@@ -101,4 +137,3 @@ export const DEFAULT_DATA: AppData = {
   })),
   roles: DEFAULT_ROLES,
 };
-

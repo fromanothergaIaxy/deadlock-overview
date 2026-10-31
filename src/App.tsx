@@ -44,9 +44,20 @@ export default function App() {
             order: saved.heroes.length + index,
           }));
 
+        const savedRoles = (saved.roles ?? []).map((role) => ({
+          ...role,
+          description: role.description ?? "",
+        }));
+
+        const missingRoles = DEFAULT_DATA.roles.filter(
+          (defaultRole) =>
+            !savedRoles.some((role) => role.id === defaultRole.id)
+        );
+
         setData({
           ...saved,
           heroes: [...saved.heroes, ...missingHeroes],
+          roles: [...savedRoles, ...missingRoles],
         });
       })
       .catch(console.error)
@@ -159,22 +170,38 @@ export default function App() {
           <div className="role-list">
             {data.roles.map((role) => (
               <div className="role-item" key={role.id}>
-                <input
-                  className="role-name"
-                  value={role.name}
+                <div className="role-item-heading">
+                  <input
+                    className="role-name"
+                    value={role.name}
+                    onChange={(event) =>
+                      updateRole(role.id, { name: event.target.value })
+                    }
+                    aria-label="Role name"
+                  />
+
+                  <input
+                    className="color-input"
+                    type="color"
+                    value={role.color}
+                    onChange={(event) =>
+                      updateRole(role.id, { color: event.target.value })
+                    }
+                    title="Change role color"
+                  />
+                </div>
+
+                <textarea
+                  className="role-description"
+                  value={role.description}
                   onChange={(event) =>
-                    updateRole(role.id, { name: event.target.value })
+                    updateRole(role.id, {
+                      description: event.target.value,
+                    })
                   }
-                  aria-label="Role name"
-                />
-                <input
-                  className="color-input"
-                  type="color"
-                  value={role.color}
-                  onChange={(event) =>
-                    updateRole(role.id, { color: event.target.value })
-                  }
-                  title="Change role color"
+                  placeholder="Describe this role..."
+                  rows={3}
+                  aria-label={`${role.name} description`}
                 />
               </div>
             ))}
@@ -266,8 +293,6 @@ export default function App() {
                         </div>
 
                         <div className="compact-content">
-                          <div className="compact-name">{hero.name}</div>
-
                           <div className="card-roles">
                             {selectedRoles.map((role) => (
                               <button
@@ -317,20 +342,25 @@ export default function App() {
 
                           <button
                             className={`build-toggle ${
-                              hero.hasBuild ? "has-build" : ""
+                              hero.hasBuild ? "has-build" : "no-build"
                             }`}
                             onClick={() =>
                               updateHero(hero.id, {
                                 hasBuild: !hero.hasBuild,
                               })
                             }
+                            title={
+                              hero.hasBuild
+                                ? "Build vorhanden"
+                                : "Kein Build vorhanden"
+                            }
                           >
+                            Build
                             {hero.hasBuild ? (
-                              <Check size={13} />
+                              <Check size={14} />
                             ) : (
-                              <X size={13} />
+                              <X size={14} />
                             )}
-                            Build {hero.hasBuild ? "Yes" : "No"}
                           </button>
                         </div>
                       </div>
