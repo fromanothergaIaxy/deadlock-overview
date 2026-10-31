@@ -36,12 +36,26 @@ export default function App() {
       .then((saved) => {
         if (!saved) return;
 
-        const existingIds = new Set(saved.heroes.map((hero) => hero.id));
+        // Aktuelle Bildpfade aus DEFAULT_DATA übernehmen,
+        // aber alle anderen gespeicherten Hero-Daten beibehalten.
+        const defaultHeroesById = new Map(
+          DEFAULT_DATA.heroes.map((hero) => [hero.id, hero])
+        );
+
+        const updatedSavedHeroes = saved.heroes.map((hero) => ({
+          ...hero,
+          image: defaultHeroesById.get(hero.id)?.image ?? hero.image,
+        }));
+
+        const existingIds = new Set(
+          updatedSavedHeroes.map((hero) => hero.id)
+        );
+
         const missingHeroes = DEFAULT_DATA.heroes
           .filter((hero) => !existingIds.has(hero.id))
           .map((hero, index) => ({
             ...hero,
-            order: saved.heroes.length + index,
+            order: updatedSavedHeroes.length + index,
           }));
 
         const savedRoles = (saved.roles ?? []).map((role) => ({
@@ -56,7 +70,7 @@ export default function App() {
 
         setData({
           ...saved,
-          heroes: [...saved.heroes, ...missingHeroes],
+          heroes: [...updatedSavedHeroes, ...missingHeroes],
           roles: [...savedRoles, ...missingRoles],
         });
       })
